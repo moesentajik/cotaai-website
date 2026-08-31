@@ -1,1 +1,1 @@
-# coati-website
+# cotaai-website
