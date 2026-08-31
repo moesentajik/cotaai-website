@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COTA AI B.V. — AI-advies, training en eigen taalmodellen voor gemeenten</title>
+<meta name="description" content="COTA AI helpt gemeenten met AI: advies over inzet en beleid, training van medewerkers, en het bouwen van een eigen taalmodel op eigen data.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   COTA AI — huisstijl
+   Foto's vervangen: zoek op "FOTO" in dit bestand.
+   ============================================================ */
+:root{
+  --ink:        #191919;
+  --ink-soft:   #4f4f4f;
+  --paper:      #ffffff;
+  --paper-warm: #faf8f4;
+  --bronze:     #a67c52;   /* decoratief, grote vlakken */
+  --bronze-deep:#855a2f;   /* tekst, links, knoppen (voldoende contrast) */
+  --line:       #e4ded5;
+
+  --wrap: 1180px;
+  --measure: 62ch;
+
+  /* FOTO — hero. Zet hier het pad naar een eigen foto, bijv:
+     --hero-image: url('img/hero.jpg');
+     Laat 'none' staan voor de grafische variant. */
+  --hero-image: none;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink-soft);
+  font-family:"Barlow","Helvetica Neue",Arial,sans-serif;
+  font-size:17px;
+  line-height:1.75;
+}
+img{max-width:100%;display:block}
+
+h1,h2,h3,.logo,.btn,.nav a{
+  font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+}
+h1,h2,h3{
+  color:var(--ink);
+  text-transform:uppercase;
+  font-weight:700;
+  letter-spacing:.01em;
+  line-height:1.05;
+  margin:0;
+}
+h2{font-size:clamp(2rem,4.4vw,3.1rem)}
+h3{font-size:1.55rem;font-weight:600}
+p{margin:0 0 1.1em}
+a{color:var(--bronze-deep)}
+a:hover{color:var(--ink)}
+
+:focus-visible{
+  outline:3px solid var(--bronze-deep);
+  outline-offset:3px;
+}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+.center{text-align:center}
+.measure{max-width:var(--measure);margin-left:auto;margin-right:auto}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:100;
+  background:var(--ink);color:#fff;padding:12px 20px;
+}
+.skip:focus{left:0}
+
+/* ---------- header ---------- */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+}
+.header-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;min-height:78px;
+}
+.logo{
+  display:inline-block;text-decoration:none;line-height:.92;
+  color:var(--bronze-deep);text-transform:uppercase;
+}
+.logo .l1{display:block;font-size:2rem;font-weight:700;letter-spacing:.02em}
+.logo .l2{display:block;font-size:1.15rem;font-weight:500;letter-spacing:.34em;color:var(--bronze)}
+
+.nav ul{display:flex;gap:30px;list-style:none;margin:0;padding:0}
+.nav a{
+  text-decoration:none;color:var(--ink);
+  text-transform:uppercase;font-weight:600;font-size:1.02rem;letter-spacing:.08em;
+  padding:6px 0;border-bottom:2px solid transparent;
+}
+.nav a:hover,.nav a[aria-current="page"]{color:var(--bronze-deep);border-bottom-color:var(--bronze)}
+
+.nav-toggle{
+  display:none;background:none;border:1px solid var(--line);
+  padding:9px 14px;font:600 .95rem/1 "Barlow",sans-serif;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--ink);cursor:pointer;
+}
+
+/* ---------- knoppen ---------- */
+.btn{
+  display:inline-block;text-decoration:none;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.11em;
+  font-size:1rem;font-weight:600;
+  padding:15px 30px;border:1px solid var(--bronze-deep);
+}
+.btn-solid{background:var(--bronze-deep);color:#fff}
+.btn-solid:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn-line{background:transparent;color:var(--bronze-deep)}
+.btn-line:hover{background:var(--bronze-deep);color:#fff}
+
+.linkline{
+  display:inline-block;text-transform:uppercase;letter-spacing:.1em;
+  font-family:"Barlow Condensed",Arial,sans-serif;font-weight:600;font-size:1.05rem;
+  text-decoration:none;color:var(--bronze-deep);
+  border-bottom:1px solid var(--bronze);padding-bottom:2px;
+}
+.linkline:hover{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;
+  min-height:min(76vh,620px);
+  display:grid;place-items:center;
+  padding:96px 0 104px;
+  background-color:#20211f;
+  background-image:var(--hero-image);
+  background-size:cover;background-position:center;
+  overflow:hidden;
+}
+/* grafische onderlaag: plangrid — verdwijnt zodra er een foto staat */
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.10) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.10) 1px,transparent 1px);
+  background-size:34px 34px,34px 34px,170px 170px,170px 170px;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 78% 18%,rgba(166,124,82,.42),transparent 62%),
+    linear-gradient(to bottom,rgba(20,21,20,.62),rgba(20,21,20,.82));
+}
+.hero-inner{position:relative;z-index:2;text-align:center;padding:0 24px;color:#fff}
+.hero h1{
+  color:#fff;font-size:clamp(3.2rem,10vw,6.6rem);
+  letter-spacing:.01em;margin-bottom:18px;
+}
+.hero h1 .line2{display:block;font-weight:500}
+.hero p{
+  color:#f2efe9;font-size:clamp(1.05rem,2.2vw,1.3rem);
+  font-weight:500;max-width:46ch;margin:0 auto 34px;
+}
+.hero .btn-solid{border-color:var(--bronze);background:var(--bronze-deep)}
+
+/* ---------- secties ---------- */
+section{padding:88px 0}
+.sec-warm{background:var(--paper-warm)}
+.sec-head{margin-bottom:34px}
+.sec-head p{margin-top:22px}
+
+/* ---------- diensten ---------- */
+.diensten{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:52px;margin-top:56px;
+}
+.dienst{text-align:center}
+.dienst h3{margin:26px 0 14px}
+.dienst p{margin-bottom:20px}
+.disc{
+  width:230px;height:230px;margin:0 auto;border-radius:50%;
+  overflow:hidden;background:#efe9e0;
+  display:grid;place-items:center;
+}
+.disc img{width:100%;height:100%;object-fit:cover}
+.disc svg{width:100%;height:100%}
+
+/* ---------- redenen ---------- */
+.redenen{
+  margin:52px auto 0;max-width:900px;
+  border-top:1px solid var(--line);
+  text-align:left;
+}
+.redenen > div{
+  padding:26px 0;border-bottom:1px solid var(--line);
+  display:grid;grid-template-columns:minmax(0,15rem) 1fr;gap:12px 40px;
+  align-items:baseline;
+}
+.redenen h3{font-size:1.3rem;text-transform:none;letter-spacing:0;color:var(--ink)}
+.redenen p{margin:0}
+
+/* ---------- personen ---------- */
+.persoon{
+  display:grid;grid-template-columns:360px 1fr;
+  gap:56px;align-items:center;
+  max-width:1040px;margin:0 auto;
+}
+.persoon + .persoon{margin-top:78px;padding-top:78px;border-top:1px solid var(--line)}
+.persoon .portret{
+  aspect-ratio:3/4;background:#1c1c1c;overflow:hidden;
+  display:grid;place-items:center;
+}
+.persoon .portret img{width:100%;height:100%;object-fit:cover}
+.persoon .portret span{
+  color:#8d8d8d;font-size:.9rem;letter-spacing:.1em;text-transform:uppercase;
+}
+.persoon-tekst h2{font-size:clamp(1.9rem,3.4vw,2.6rem);margin-bottom:6px}
+.rol{
+  display:block;color:var(--bronze-deep);font-weight:600;
+  letter-spacing:.06em;margin-bottom:20px;
+}
+.persoon:nth-child(even) .portret{order:2}
+
+/* ---------- contact ---------- */
+.contact-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:56px;
+  max-width:940px;margin:48px auto 0;text-align:left;
+}
+.contact-grid h3{font-size:1.25rem;text-transform:none;letter-spacing:0;margin-bottom:10px}
+.contact-grid p{margin-bottom:1.4em}
+
+/* ---------- footer ---------- */
+.site-footer{background:#1a1a1a;color:#b6b2ac;padding:76px 0 40px}
+.site-footer h2{color:#fff;font-size:1.45rem;margin-bottom:22px}
+.footer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:44px}
+.site-footer ul{list-style:none;margin:0;padding:0}
+.site-footer li{margin-bottom:10px}
+.site-footer a{color:#d6d2cc;text-decoration:none}
+.site-footer a:hover{color:#fff;text-decoration:underline}
+.site-footer address{font-style:normal;line-height:1.9}
+.footer-bottom{
+  margin-top:56px;padding-top:22px;border-top:1px solid #333;
+  display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between;
+  font-size:.92rem;color:#8e8a85;
+}
+.footer-bottom a{color:#8e8a85}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .diensten{grid-template-columns:1fr;gap:56px}
+  .persoon,.persoon:nth-child(even){grid-template-columns:1fr;gap:28px}
+  .persoon .portret,.persoon:nth-child(even) .portret{order:0;max-width:320px;margin:0 auto}
+  .persoon-tekst{text-align:center}
+  .contact-grid{grid-template-columns:1fr;gap:32px}
+  .redenen > div{grid-template-columns:1fr;gap:6px}
+  .footer-grid{grid-template-columns:1fr;gap:38px}
+}
+@media (max-width:760px){
+  section{padding:64px 0}
+  .nav-toggle{display:block}
+  .nav{
+    display:none;position:absolute;left:0;right:0;top:100%;
+    background:var(--paper);border-bottom:1px solid var(--line);
+  }
+  .nav.open{display:block}
+  .header-inner{position:relative}
+  .nav ul{flex-direction:column;gap:0;padding:8px 24px 20px}
+  .nav a{display:block;padding:12px 0;border-bottom:1px solid var(--line)}
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .hero-inner{animation:rise .7s ease-out both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+}
+
+@media print{
+  .site-header,.hero::before,.hero::after{display:none}
+  body{color:#000}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Naar de inhoud</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="#top">
+      <span class="l1">COTA</span>
+      <span class="l2">AI</span>
+    </a>
+
+    <button class="nav-toggle" aria-expanded="false" aria-controls="hoofdmenu">Menu</button>
+
+    <nav class="nav" id="hoofdmenu" aria-label="Hoofdmenu">
+      <ul>
+        <li><a href="#top" aria-current="page">Home</a></li>
+        <li><a href="#diensten">Diensten</a></li>
+        <li><a href="#eigen-model">Eigen model</a></li>
+        <li><a href="#over-ons">Over ons</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <div class="hero" id="top">
+    <div class="hero-inner">
+      <h1>COTA <span class="line2">AI</span></h1>
+      <p>AI-advies, training en eigen taalmodellen voor gemeenten</p>
+      <a class="btn btn-solid" href="#diensten">Bekijk onze diensten</a>
+    </div>
+  </div>
+
+  <!-- ============ INTRO ============ -->
+  <section>
+    <div class="wrap center">
+      <div class="sec-head">
+        <h2>AI die bij de gemeente past</h2>
+        <div class="measure">
+          <p>
+            Veel gemeenten willen iets met AI, maar lopen vast op dezelfde vragen: waar begin je,
+            wat mag er met onze gegevens, en wat levert het de organisatie echt op? COTA AI helpt
+            u die vragen te beantwoorden en daarna ook uit te voeren.
+          </p>
+          <p>
+            Wij combineren kennis van de gemeentelijke praktijk — gebiedsontwikkeling, planeconomie,
+            besluitvorming — met de techniek erachter. Zo krijgt u advies dat rekening houdt met uw
+            processen, en techniek die aansluit op wat uw medewerkers dagelijks doen.
+          </p>
+        </div>
+      </div>
+      <a class="btn btn-line" href="#contact">Plan een kennismaking</a>
+    </div>
+  </section>
+
+  <!-- ============ DIENSTEN ============ -->
+  <section id="diensten" class="sec-warm">
+    <div class="wrap">
+      <div class="center sec-head">
+        <h2>Onze diensten</h2>
+        <p class="measure">
+          Van een eerste verkenning tot een werkend model binnen uw eigen omgeving.
+          U kunt bij ons terecht voor één onderdeel of voor het hele traject.
+        </p>
+      </div>
+
+      <div class="diensten">
+
+        <article class="dienst">
+          <!-- FOTO — vervang de <svg> door <img src="img/advies.jpg" alt="..."> -->
+          <div class="disc" aria-hidden="true">
+            <svg viewBox="0 0 200 200" role="presentation">
+              <rect width="200" height="200" fill="#ece5da"/>
+              <g stroke="#a67c52" fill="none" stroke-width="1.6">
+                <path d="M20 150 L70 118 L120 138 L180 96"/>
+                <path d="M20 170 L70 152 L120 160 L180 140" opacity=".5"/>
+              </g>
+              <g fill="#855a2f">
+                <circle cx="70" cy="118" r="4.5"/><circle cx="120" cy="138" r="4.5"/>
+                <circle cx="180" cy="96" r="4.5"/><circle cx="20" cy="150" r="4.5"/>
+              </g>
+              <g stroke="#c9bba8" stroke-width="1">
+                <path d="M0 60 H200 M0 90 H200 M60 0 V200 M140 0 V200"/>
+              </g>
+            </svg>
+          </div>
+          <h3>Advies &amp; strategie</h3>
+          <p>
+            We brengen in kaart waar AI in uw organisatie het meeste oplevert en waar het juist
+            niet moet. Dat leidt tot een concreet plan: welke toepassingen, in welke volgorde,
+            met welke waarborgen rond privacy, aanbesteding en de AI-verordening.
+          </p>
+          <a class="linkline" href="#contact">Meer over advies</a>
+        </article>
+
+        <article class="dienst">
+          <!-- FOTO — vervang de <svg> door <img src="img/training.jpg" alt="..."> -->
+          <div class="disc" aria-hidden="true">
+            <svg viewBox="0 0 200 200" role="presentation">
+              <rect width="200" height="200" fill="#e7e0d5"/>
+              <rect x="34" y="52" width="132" height="80" fill="none" stroke="#855a2f" stroke-width="2"/>
+              <g stroke="#a67c52" stroke-width="2">
+                <path d="M50 74 H120 M50 90 H140 M50 106 H100"/>
+              </g>
+              <g fill="#855a2f">
+                <circle cx="64" cy="158" r="9"/><circle cx="100" cy="158" r="9"/><circle cx="136" cy="158" r="9"/>
+              </g>
+            </svg>
+          </div>
+          <h3>Training &amp; AI-geletterdheid</h3>
+          <p>
+            Praktische trainingen voor medewerkers, teams en management. Wat kan een taalmodel,
+            wat niet, hoe herkent u een onbetrouwbaar antwoord en hoe gaat u om met gegevens van
+            inwoners. Toegespitst op het werk van de deelnemers, niet op de techniek.
+          </p>
+          <a class="linkline" href="#contact">Meer over training</a>
+        </article>
+
+        <article class="dienst">
+          <!-- FOTO — vervang de <svg> door <img src="img/model.jpg" alt="..."> -->
+          <div class="disc" aria-hidden="true">
+            <svg viewBox="0 0 200 200" role="presentation">
+              <rect width="200" height="200" fill="#eae3d8"/>
+              <g stroke="#a67c52" stroke-width="1.6" fill="none">
+                <path d="M100 46 V80 M100 120 V154 M56 100 H84 M116 100 H144"/>
+                <path d="M64 64 L84 84 M136 64 L116 84 M64 136 L84 116 M136 136 L116 116"/>
+              </g>
+              <rect x="80" y="80" width="40" height="40" fill="#855a2f"/>
+              <g fill="#855a2f">
+                <circle cx="100" cy="42" r="6"/><circle cx="100" cy="158" r="6"/>
+                <circle cx="42" cy="100" r="6"/><circle cx="158" cy="100" r="6"/>
+                <circle cx="60" cy="60" r="5"/><circle cx="140" cy="60" r="5"/>
+                <circle cx="60" cy="140" r="5"/><circle cx="140" cy="140" r="5"/>
+              </g>
+            </svg>
+          </div>
+          <h3>Een eigen taalmodel</h3>
+          <p>
+            Wij bouwen en trainen een taalmodel op uw eigen documenten, dat draait binnen uw
+            eigen omgeving. Uw gegevens verlaten de organisatie niet en het model kent uw
+            verordeningen, dossiers en werkwijze.
+          </p>
+          <a class="linkline" href="#eigen-model">Meer over eigen modellen</a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EIGEN MODEL ============ -->
+  <section id="eigen-model">
+    <div class="wrap">
+      <div class="center sec-head">
+        <h2>Waarom een model in eigen huis</h2>
+        <p class="measure">
+          Steeds meer gemeenten willen niet volledig afhankelijk zijn van de grote commerciële
+          aanbieders. Een eigen model, getraind op eigen data, geeft meer grip — en betere antwoorden.
+        </p>
+      </div>
+
+      <div class="redenen">
+        <div>
+          <h3>Uw gegevens blijven van u</h3>
+          <p>
+            Het model draait binnen uw eigen infrastructuur. Stukken over inwoners, grondexploitaties
+            of personeel gaan niet naar een server buiten de organisatie.
+          </p>
+        </div>
+        <div>
+          <h3>Minder verzonnen antwoorden</h3>
+          <p>
+            Een model dat uw eigen verordeningen, nota's en dossiers kent, hoeft minder te gokken.
+            Antwoorden zijn navolgbaar en te herleiden tot een bron in uw eigen archief.
+          </p>
+        </div>
+        <div>
+          <h3>Geen leveranciersafhankelijkheid</h3>
+          <p>
+            Geen prijsverhoging, gewijzigde voorwaarden of stopgezet product waar u niets tegen kunt
+            doen. U bepaalt zelf wanneer er iets verandert.
+          </p>
+        </div>
+        <div>
+          <h3>Voorspelbare kosten</h3>
+          <p>
+            Een eenmalige investering in plaats van een licentie per medewerker die meegroeit met
+            het gebruik. Dat maakt de begroting over meerdere jaren beter te onderbouwen.
+          </p>
+        </div>
+        <div>
+          <h3>Uitlegbaar aan raad en toezicht</h3>
+          <p>
+            U kunt laten zien welke data het model gebruikt en hoe het is getraind. Dat helpt bij
+            de AVG, bij de AI-verordening en bij vragen uit de gemeenteraad.
+          </p>
+        </div>
+      </div>
+
+      <p class="center" style="margin-top:44px">
+        <a class="btn btn-line" href="#contact">Bespreek de mogelijkheden</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ OVER ONS ============ -->
+  <section id="over-ons" class="sec-warm">
+    <div class="wrap">
+      <div class="center sec-head">
+        <h2>Over ons</h2>
+        <p class="measure">
+          COTA AI is in 2026 opgericht door Jeroen Coers en Moesen Tajik. De één kent de
+          gemeentelijke praktijk van binnenuit, de ander bouwt de techniek. Samen zorgen we dat
+          een AI-traject niet in een pilot blijft steken.
+        </p>
+      </div>
+
+      <article class="persoon">
+        <!-- FOTO — vervang de <span> door <img src="img/jeroen.jpg" alt="Jeroen Coers"> -->
+        <div class="portret"><span>Foto Jeroen</span></div>
+        <div class="persoon-tekst">
+          <h2>Jeroen Coers</h2>
+          <span class="rol">Gemeentelijke praktijk &amp; samenwerking</span>
+          <p>
+            Jeroen adviseert gemeenten al jaren over planeconomie en projectleiding bij
+            gebiedsontwikkeling, vanuit zijn eigen bureau Coers Vastgoed. Hij weet hoe een
+            gemeente werkt: hoe besluiten tot stand komen, waar budget vandaan komt en waarom een
+            goed idee soms blijft liggen.
+          </p>
+          <p>
+            Binnen COTA AI is hij het eerste aanspreekpunt. Hij vertaalt wat er in uw organisatie
+            speelt naar een aanpak die uitvoerbaar is — en houdt de vinger aan de pols zolang het
+            traject loopt.
+          </p>
+        </div>
+      </article>
+
+      <article class="persoon">
+        <!-- FOTO — vervang de <span> door <img src="img/moesen.jpg" alt="Moesen Tajik"> -->
+        <div class="portret"><span>Foto Moesen</span></div>
+        <div class="persoon-tekst">
+          <h2>Moesen Tajik</h2>
+          <span class="rol">AI-engineering &amp; onderwijs</span>
+          <p>
+            Moesen bouwt de techniek. Hij heeft een achtergrond in econometrie met een focus op
+            machine learning en werkte aan een taalmodel dat onterechte verkeers- en parkeerboetes
+            herkent — precies het soort toepassing waarbij juridische tekst, data en besluitvorming
+            samenkomen.
+          </p>
+          <p>
+            Daarnaast is hij docent aan hogeschool Windesheim, waar hij studenten en collega-docenten
+            traint in AI-geletterdheid. Die ervaring gebruikt hij ook bij gemeenten: uitleggen wat
+            een model wel en niet kan, zonder dat u er een technische opleiding voor nodig heeft.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="center sec-head">
+        <h2>Contact</h2>
+        <p class="measure">
+          Benieuwd wat AI voor uw gemeente kan betekenen? Een kennismakingsgesprek van een uur is
+          vrijblijvend en levert meestal al een paar bruikbare inzichten op.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <div>
+          <h3>Direct contact</h3>
+          <p>
+            E-mail: <a href="mailto:info@cota-ai.nl">info@cota-ai.nl</a><br>
+            Telefoon: <a href="tel:+31641263781">+31 6 41 26 37 81</a>
+          </p>
+          <p><a class="btn btn-solid" href="mailto:info@cota-ai.nl">Stuur een e-mail</a></p>
+        </div>
+        <div>
+          <h3>Gegevens</h3>
+          <address>
+            COTA AI B.V.<br>
+            Sassenbergen 67<br>
+            9531 GW Borger<br><br>
+            KvK: 00000000<br>
+            BTW: NL000000000B01
+          </address>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Diensten</h2>
+        <ul>
+          <li><a href="#diensten">Advies &amp; strategie</a></li>
+          <li><a href="#diensten">Training &amp; AI-geletterdheid</a></li>
+          <li><a href="#eigen-model">Een eigen taalmodel</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>COTA AI B.V.</h2>
+        <address>
+          Sassenbergen 67<br>
+          9531 GW Borger<br>
+          <a href="mailto:info@cota-ai.nl">info@cota-ai.nl</a><br>
+          <a href="tel:+31641263781">+31 6 41 26 37 81</a>
+        </address>
+      </div>
+      <div>
+        <h2>Volg ons</h2>
+        <ul>
+          <li><a href="https://www.linkedin.com/" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; <span id="jaar">2026</span> COTA AI B.V.</span>
+      <span>
+        <a href="#">Privacyverklaring</a> &nbsp;·&nbsp;
+        <a href="#">Toegankelijkheidsverklaring</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobiel menu
+  var toggle = document.querySelector('.nav-toggle');
+  var nav = document.getElementById('hoofdmenu');
+  toggle.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Actief menu-item bij scrollen
+  var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
+  var targets = links
+    .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+    .filter(Boolean);
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function (a) { a.removeAttribute('aria-current'); });
+        var match = links.find(function (a) {
+          return a.getAttribute('href') === '#' + entry.target.id;
+        });
+        if (match) match.setAttribute('aria-current', 'page');
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    targets.forEach(function (t) { io.observe(t); });
+  }
+
+  document.getElementById('jaar').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
